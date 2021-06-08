@@ -217,6 +217,7 @@ have the following signatures:
 
 * `void __riscv_save_<N>(void)`
 * `void __riscv_restore_<N>(void)`
+* `void __riscv_restore_tailcall_<N>(void *tail)`
 
 `<N>` is a value between 0 and 12 and corresponds to the number of
 registers between `s0` and `s11` that are saved/restored. The return
@@ -228,6 +229,13 @@ registers and then save `ra` and the appropriate number of registers from
 `s0`-`s11`. The `__riscv_restore_<N>` functions are tail-called from the
 epilogue. They restore the saved registers, deallocate the stack space for the
 register, and then perform a return through the restored value of `ra`.
+
+`__riscv_restore_tailcall_<N>` are additional entry points used when the
+epilogue of the calling function ended in a tail-call. Unlike
+`__riscv_restore_<N>` these functions are provided the address of the function
+which was original tail-called as an argument in `t1`, and instead of
+performing a return through the restored value of `ra` they will perform
+a tail-call through this register.
 
 ## TODO
 
