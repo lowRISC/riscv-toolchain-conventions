@@ -54,10 +54,27 @@ base and extensions, e.g. `-march=rv64g`. A target `-march` which includes
 floating point instructions implies a hardfloat calling convention, but can be 
 overridden using the `-mabi` flag (see the next section).
 
-The ISA subset naming conventions are described in Chapter 22 of the RISC-V 
-user-level ISA specification. However, tools do not currently follow this 
-specification (no support for parsing version specifiers, input is case 
-sensitive, ...).
+The ISA subset naming conventions and canonical order are described in
+Chapter `ISA Extension Naming Conventions` of the RISC-V user-level ISA
+specification. However, tools can accept the ISA string in non-canonical
+order for reduce the burden of remembering the canonical order.
+
+Detail rule for ISA string:
+
+1. First letter must be `i`, `e` or `g`.
+2. Multi-letter extension must come after single-letter extension.
+3. Single-letter could be non-canonical order.
+4. Multi-letter could be non-canonical order.
+5. Multi-letter must separated by underscore.
+
+Example:
+```
+rv32ima_zicsr        # Valid ISA string.
+rv32mai              # Invalid ISA string, first letter must be `i`, `e` or `g`.
+rv32i_zicsr_m        # Invalid ISA string, multi-letter extension must come after single-letter extension.
+rv32i_zicsrzifence   # Valid ISA string, but it will interpreted as rv32 with base extension and
+                     # `zicsrzifence` extension rather than `zicsr` and `zifence` extensions.
+```
 
 If the 'C' (compressed) instruction set extension is targeted, the compiler 
 will generate compressed instructions where possible.
